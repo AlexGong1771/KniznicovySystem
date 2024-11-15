@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservovat Knihu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-4">Reservovat Knihu</h1>
+
+    <form method="post" action="/history/borrow">
+        <div class="mb-3">
+            <label for="citatel" class="form-label">Vyber Citatela</label>
+            <select class="form-select" id="citatel" name="cisloOP" required>
+                <option th:each="citatel : ${citatelList}"
+                        th:value="${citatel.cisloOP}"
+                        th:text="${citatel.meno + ' ' + citatel.priezvisko}">
+                </option>
+            </select>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="kniha" class="form-label">Vyber Knihu</label>
+            <select class="form-select" id="kniha" name="knihaId" required>
+                <option th:each="kniha : ${knihaList}" th:value="${kniha.id}" th:text="${kniha.nazov}"></option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Rezervovat</button>
+    </form>
+    <a class="btn btn-outline-primary" href="/history">Spat</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

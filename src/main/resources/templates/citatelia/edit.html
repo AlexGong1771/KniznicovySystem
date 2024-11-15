@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Čitateľa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="col-md-8 mx-auto rounded border p-4 m-4">
+        <h2 class="text-center mb-5">Edit Čitateľa</h2>
+
+        <!-- Form starts here -->
+        <form method="post" th:action="@{/citatelia/edit(cisloOP=${citatel.cisloOP})}" th:object="${citatelDto}">
+
+            <!-- Číslo OP (Read-only) -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Číslo OP</label>
+                <div class="col-sm-8">
+                    <!-- Use plain text for read-only fields -->
+                    <p class="form-control-plaintext" th:text="${citatel.cisloOP}"></p>
+                </div>
+            </div>
+
+            <!-- Meno -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Meno</label>
+                <div class="col-sm-8">
+                    <input class="form-control" th:field="*{meno}" required>
+                    <p th:if="${#fields.hasErrors('meno')}" th:errorclass="text-danger" th:errors="*{meno}"></p>
+                </div>
+            </div>
+
+            <!-- Priezvisko -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Priezvisko</label>
+                <div class="col-sm-8">
+                    <input class="form-control" th:field="*{priezvisko}" required>
+                    <p th:if="${#fields.hasErrors('priezvisko')}" th:errorclass="text-danger" th:errors="*{priezvisko}"></p>
+                </div>
+            </div>
+
+            <!-- Dátum narodenia -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Dátum Narodenia</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="date" th:field="*{datumNarodenia}" required>
+                    <p th:if="${#fields.hasErrors('datumNarodenia')}" th:errorclass="text-danger" th:errors="*{datumNarodenia}"></p>
+                </div>
+            </div>
+
+            <!-- Tlačidlá -->
+            <div class="row">
+                <div class="offset-sm-4 col-sm-4 d-grid">
+                    <button type="submit" class="btn btn-primary">Uložiť Zmeny</button>
+                </div>
+                <div class="col-sm-4 d-grid">
+                    <a class="btn btn-outline-primary" href="/citatelia" role="button">Zrušiť</a>
+                </div>
+            </div>
+        </form>
+        <!-- Form ends here -->
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
