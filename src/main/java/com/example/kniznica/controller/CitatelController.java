@@ -42,7 +42,7 @@ public class CitatelController {
 
 
 
-        // Create a new product and set its properties
+        // vytvarame noveho citatela cez dto
         Citatel citatel = new Citatel();
         citatel.setCisloOP(citatelDto.getCisloOP());
         citatel.setMeno(citatelDto.getMeno());
@@ -50,7 +50,7 @@ public class CitatelController {
         citatel.setDatumNarodenia(citatelDto.getDatumNarodenia());
 
 
-        // Save the product to the repository
+    //ulozime ho do repozitara
         repo.save(citatel);
 
         return "redirect:/citatelia";
@@ -71,13 +71,13 @@ public class CitatelController {
             System.err.println("Exception: " + e.getMessage());
             return "redirect:/citatelia";
         }
-        return "citatelia/edit"; // Ensure this matches the form's template name
+        return "citatelia/edit";
     }
 
     @PostMapping("/edit")
     public String updateProduct(Model model, @RequestParam String cisloOP, @Valid @ModelAttribute CitatelDto citatelDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "citatelia/edit"; // Ensure this matches the template name used in the GET method
+            return "citatelia/edit";
         }
 
         try {
@@ -86,18 +86,18 @@ public class CitatelController {
 
 
 
-            // Update other fields
+           //updatovanie citatela
 
             citatel.setMeno(citatelDto.getMeno());
             citatel.setPriezvisko(citatelDto.getPriezvisko());
             citatel.setDatumNarodenia(citatelDto.getDatumNarodenia());
 
-            // Save updated product
+
             repo.save(citatel);
 
         } catch (Exception e) {
             System.err.println("Exception: " + e.getMessage());
-            return "citatelia/edit"; // If an error occurs, stay on the edit page
+            return "citatelia/edit";
         }
 
         return "redirect:/citatelia";

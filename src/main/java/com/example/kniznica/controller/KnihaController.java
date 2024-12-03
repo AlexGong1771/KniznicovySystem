@@ -45,28 +45,28 @@ public class KnihaController {
 
    @PostMapping("/pridaj")
    public String createProduct(@Valid @ModelAttribute KnihaDto productDto, BindingResult bindingResult) {
-       // Check if the image file is empty and handle validation errors
+
        if (productDto.getImageFile().isEmpty()) {
            bindingResult.addError(new FieldError("knihaDto", "imageFile", "The image file is required"));
        }
        if (bindingResult.hasErrors()) {
-           return "knihy/pridaj"; // Redirect to form if there are errors
+           return "knihy/pridaj";
        }
 
-       // Get the uploaded image file and create a unique file name
+
        MultipartFile image = productDto.getImageFile();
        Date date = new Date();
        String storageFileName = date.getTime() + "_" + image.getOriginalFilename();
 
        try {
-           // Define upload directory and create it if it does not exist
+
            String uploadDir = "public/images";
            Path uploadPath = Paths.get(uploadDir);
            if (!Files.exists(uploadPath)) {
                Files.createDirectories(uploadPath);
            }
 
-           // Save the image file to the specified directory
+
            try (InputStream inputStream = image.getInputStream()) {
                Files.copy(inputStream, uploadPath.resolve(storageFileName), StandardCopyOption.REPLACE_EXISTING);
            }
@@ -76,14 +76,14 @@ public class KnihaController {
            return "knihy/pridaj";
        }
 
-       // Create a new product and set its properties
+
        Kniha product = new Kniha();
        product.setNazov(productDto.getNazov());
        product.setAutor(productDto.getAutor());
        product.setJeVypozicana(productDto.getJeVypozicanaDto());
        product.setImageFileName(storageFileName);
 
-       // Save the product to the repository
+
        repo.save(product);
 
        return "redirect:/knihy";
@@ -110,14 +110,14 @@ public class KnihaController {
     @PostMapping("/edit")
     public String updateProduct(Model model, @RequestParam long id, @Valid @ModelAttribute KnihaDto productDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "knihy/edit"; // Ensure this matches the template name used in the GET method
+            return "knihy/edit";
         }
 
         try {
             Kniha kniha= repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid book ID: " + id));
             model.addAttribute("kniha", kniha);
 
-            // Update fields if image file is not empty
+
             if (!productDto.getImageFile().isEmpty()) {
                 String uploadDir = "public/images/";
                 Path oldImagePath = Paths.get(uploadDir, kniha.getImageFileName());

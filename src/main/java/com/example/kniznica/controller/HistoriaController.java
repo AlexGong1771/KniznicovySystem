@@ -47,7 +47,7 @@ public class HistoriaController {
 
 
 
-    // Form for borrowing a book
+    // forma pre rezervaciu khihy
     @GetMapping("/borrow")
     public String borrowBookForm(Model model) {
         List<Citatel> citatelList = citatelRepo.findAll();
@@ -58,7 +58,7 @@ public class HistoriaController {
         return "history/borrow";
     }
 
-    // Process borrowing a book
+    // postmaping
     @PostMapping("/borrow")
     public String borrowBook(@RequestParam String cisloOP, @RequestParam Long knihaId, Model model) {
         Optional<Citatel> citatelOpt = citatelRepo.findById(cisloOP);
@@ -68,22 +68,23 @@ public class HistoriaController {
             Citatel citatel = citatelOpt.get();
             Kniha kniha = knihaOpt.get();
 
-            // Create a new borrowing history entry
+            // vytvaranie novej historie
             Historia historia = new Historia();
             historia.setCitatel(citatel);
             historia.setKniha(kniha);
             historia.setBorrowDate(new Date());
-            historia.setReturnDate(calculateReturnDate());  // Calculate or set return date
+            historia.setReturnDate(calculateReturnDate());
 
             historiaRepo.save(historia);
 
-            // Update book's status to borrowed (assuming `jeVypozicana` is an enum)
+
             kniha.setJeVypozicana(StavVypozicky.ANO);
             knihaRepo.save(kniha);
 
-            model.addAttribute("message", "Book successfully borrowed!");
+
+            model.addAttribute("message", "Kniha je uspesne rezervovana");
         } else {
-            model.addAttribute("message", "User or Book not found");
+            model.addAttribute("message", "Citatel alebo kniha nie je najdena");
         }
 
         return "history/borrow";
@@ -91,110 +92,60 @@ public class HistoriaController {
 
 
 
-    // Display the return book form
-//    @GetMapping("/return/{id}")
-//    public String returnBookForm(@PathVariable("id") Long id, Model model) {
-//        if (id == null) {
-//            model.addAttribute("message", "Invalid history ID provided.");
-//            return "error"; // Redirect to a generic error page or display an error.
-//        }
-//
-//        Optional<Historia> historiaOpt = historiaRepo.findById(id);
-//        if (historiaOpt.isPresent()) {
-//            model.addAttribute("historia", historiaOpt.get());
-//        } else {
-//            model.addAttribute("message", "History record not found.");
-//        }
-//        return "history/return";
-//    }
-//
-//    // Process the book return
-//    @PostMapping("/return")
-//    public String returnBook(@RequestParam("id") Long id,
-//                             @RequestParam("cisloOP") String cisloOP,
-//                             @RequestParam("knihaId") Long knihaId,
-//                             Model model) {
-//        if (id == null || knihaId == null || cisloOP == null) {
-//            model.addAttribute("message", "Both history ID and book ID are required.");
-//            return "error"; // Redirect to an error page.
-//        }
-//
-//        Optional<Historia> historiaOpt = historiaRepo.findById(id);
-//        Optional<Kniha> knihaOpt = knihaRepo.findById(knihaId);
-//        Optional<Citatel> citatelOpt = citatelRepo.findById(cisloOP);
-//        if (historiaOpt.isPresent() && knihaOpt.isPresent() && citatelOpt.isPresent()) {
-//            Historia historia = historiaOpt.get();
-//            Kniha kniha = knihaOpt.get();
-//            Citatel citatel = citatelOpt.get();
-//
-//            // Update the history record's actual return date
-//            historia.setActualReturnDate(new Date());
-//            historiaRepo.save(historia);
-//
-//            // Update the book's availability status
-//            kniha.setJeVypozicana(StavVypozicky.NIE);
-//            knihaRepo.save(kniha);
-//
-//            model.addAttribute("message", "Book successfully returned!");
-//            return "redirect:/history"; // Redirect to the history list.
-//        } else {
-//            model.addAttribute("message", "History record or Book not found.");
-//            return "error"; // Redirect to an error page.
-//        }
-//    }
+
     @GetMapping("/edit")
     public String showEditPage(@RequestParam Long id, Model model) {
         try {
-            // Fetch Historia entity using ID
+            // najdi historiu po id
             Historia historia = historiaRepo.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid history ID: " + id));
+                    .orElseThrow(() -> new IllegalArgumentException("Nespravne ID: " + id));
 
-            // Create a DTO and populate it with values from the Historia entity
+
             HistoriaDto historyDto = new HistoriaDto();
             historyDto.setId(historia.getId());
             historyDto.setReturnDate(historia.getReturnDate());
             historyDto.setActualReturnDate(historia.getActualReturnDate());
 
-            // Add both the Historia entity and the HistoriaDto to the model
+
             model.addAttribute("historiyyy", historia);
             model.addAttribute("historyDto", historyDto);
 
         } catch (Exception e) {
             model.addAttribute("message", "Error: " + e.getMessage());
-            return "redirect:/history"; // Redirect to the history list on error
+            return "redirect:/history";
         }
 
-        // Return the form view
+
         return "history/edit";
     }
 
-    // POST: Handle the form submission and update the Historia entity
+
     @PostMapping("/edit")
     public String updateHistory(@Valid @ModelAttribute("historyDto") HistoriaDto historyDto,
                                 BindingResult bindingResult, Model model, @RequestParam Long id) {
 
         if (bindingResult.hasErrors()) {
-            return "history/edit"; // Stay on the form page if validation fails
+            return "history/edit"; // ak je chyba tak ostan na stranke
         }
 
         try {
-            // Fetch the Historia entity by its ID
+
             Historia historia = historiaRepo.findById(historyDto.getId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid history ID: " + id));
 
-            // Update the Historia entity with values from the DTO
+
             historia.setReturnDate(historyDto.getReturnDate());
             historia.setActualReturnDate(historyDto.getActualReturnDate());
 
-            // Save the updated Historia entity back to the repository
+
             historiaRepo.save(historia);
 
         } catch (Exception e) {
             model.addAttribute("message", "Error: " + e.getMessage());
-            return "history/edit"; // If an error occurs, stay on the edit page
+            return "history/edit";
         }
 
-        // Redirect to the history list after successful update
+
         return "redirect:/history";
     }
 
@@ -208,12 +159,12 @@ public class HistoriaController {
             if (citatelOptional.isPresent()) {
                 Historia citatel = citatelOptional.get();
                 historiaRepo.delete(citatel);
-                System.out.println("Deleted citatel with cisloOP: " + id);
+                System.out.println("Zmazanie citatela s cisloOP: " + id);
             } else {
-                System.out.println("Citatel with cisloOP " + id + " not found.");
+                System.out.println("Citatel s cisloOP " + id + " nie je najdeny.");
             }
         } catch (Exception e) {
-            System.err.println("Error during delete operation: " + e.getMessage());
+            System.err.println("Chyba operacie: " + e.getMessage());
             e.printStackTrace();
         }
         return "redirect:/history";
@@ -221,8 +172,8 @@ public class HistoriaController {
 
 
     private Date calculateReturnDate() {
-       // Define logic for calculating return date, e.g., add 14 days for the borrow period
+
        long time = System.currentTimeMillis();
-      return new Date(time + (14 * 24 * 60 * 60 * 1000));  // Example: 14 days from now
+      return new Date(time + (14 * 24 * 60 * 60 * 1000));  // +14 dni + sysdate
    }
 }

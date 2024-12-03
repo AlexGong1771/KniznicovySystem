@@ -10,6 +10,8 @@
 <div class="container">
     <h1 class="mt-4">Reservovat Knihu</h1>
 
+    <div th:if="${message}" class="alert alert-info" th:text="${message}"></div>
+
     <form method="post" action="/history/borrow">
         <div class="mb-3">
             <label for="citatel" class="form-label">Vyber Citatela</label>
@@ -24,8 +26,12 @@
 
         <div class="mb-3">
             <label for="kniha" class="form-label">Vyber Knihu</label>
-            <select class="form-select" id="kniha" name="knihaId" required>
-                <option th:each="kniha : ${knihaList}" th:value="${kniha.id}" th:text="${kniha.nazov}"></option>
+            <select class="form-select" id="kniha" name="knihaId"  required>
+                <option th:each="kniha : ${knihaList} "
+                        th:value="${kniha.id}"
+                        th:text="${kniha.nazov}"
+                        th:disabled="${kniha.jeVypozicana == kniha.jeVypozicana.ANO}">
+                </option>
             </select>
         </div>
 

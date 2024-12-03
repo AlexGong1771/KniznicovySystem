@@ -12,7 +12,7 @@
         <h2 class="text-center mb-5">Uprav Historiu</h2>
 
         <form method="post" th:action="@{/history/edit}" th:object="${historyDto}">
-            <!-- Hidden field to pass the ID -->
+
             <input type="hidden" th:field="*{id}" />
 
             <div class="form-group">

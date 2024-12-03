@@ -27,14 +27,13 @@
       <td th:text="${history.id}">History ID</td>
       <td th:text="${history.citatel.meno}"></td>
       <td th:text="${history.kniha.nazov}"></td>
-      <!-- Format the borrowDate and returnDate -->
       <td th:text="${#dates.format(history.borrowDate, 'dd.MM.yyyy')}"></td>
       <td th:text="${#dates.format(history.returnDate, 'dd.MM.yyyy')}"></td>
       <td th:text="${history.actualReturnDate != null ? #dates.format(history.actualReturnDate, 'dd.MM.yyyy') : 'Nie vratena'}"></td>
 
-      <!-- Format 'actualReturnDate' with the same date format -->
+
       <td style="white-space: nowrap">
-        <!-- Akcia pre úpravu a vymazanie -->
+
         <a class="btn btn-primary btn-sm" th:href="@{/history/edit(id=${history.id})}">Upraviť</a>
         <a class="btn btn-danger btn-sm" th:href="@{/history/delete(id=${history.id})}"
            onclick="return confirm('Ste si istí, že chcete odstrániť túto knihu?')">Odstrániť</a>

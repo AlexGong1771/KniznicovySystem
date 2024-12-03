@@ -11,19 +11,19 @@
     <div class="col-md-8 mx-auto rounded border p-4 m-4">
         <h2 class="text-center mb-5">Edit Čitateľa</h2>
 
-        <!-- Form starts here -->
+
         <form method="post" th:action="@{/citatelia/edit(cisloOP=${citatel.cisloOP})}" th:object="${citatelDto}">
 
-            <!-- Číslo OP (Read-only) -->
+
             <div class="row mb-3">
                 <label class="col-sm-4 col-form-label">Číslo OP</label>
                 <div class="col-sm-8">
-                    <!-- Use plain text for read-only fields -->
+
                     <p class="form-control-plaintext" th:text="${citatel.cisloOP}"></p>
                 </div>
             </div>
 
-            <!-- Meno -->
+
             <div class="row mb-3">
                 <label class="col-sm-4 col-form-label">Meno</label>
                 <div class="col-sm-8">
@@ -32,7 +32,7 @@
                 </div>
             </div>
 
-            <!-- Priezvisko -->
+
             <div class="row mb-3">
                 <label class="col-sm-4 col-form-label">Priezvisko</label>
                 <div class="col-sm-8">
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <!-- Dátum narodenia -->
+
             <div class="row mb-3">
                 <label class="col-sm-4 col-form-label">Dátum Narodenia</label>
                 <div class="col-sm-8">
@@ -50,7 +50,7 @@
                 </div>
             </div>
 
-            <!-- Tlačidlá -->
+
             <div class="row">
                 <div class="offset-sm-4 col-sm-4 d-grid">
                     <button type="submit" class="btn btn-primary">Uložiť Zmeny</button>
@@ -60,7 +60,7 @@
                 </div>
             </div>
         </form>
-        <!-- Form ends here -->
+
 
     </div>
 </div>
