@@ -22,7 +22,8 @@ public class Citatel {
         @Min(8)
 
         private String cisloOP;
-
+        @NotEmpty()
+        private String password;
 
         @NotEmpty()
         private String meno;

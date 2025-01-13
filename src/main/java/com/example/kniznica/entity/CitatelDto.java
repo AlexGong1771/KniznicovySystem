@@ -17,6 +17,10 @@ public class CitatelDto {
     @Min(8)
     private String cisloOP;
     @NotEmpty(message = "This field is required")
+    @Min(8)
+    private String password;
+
+    @NotEmpty(message = "This field is required")
     private String meno,priezvisko  ;
     @NotEmpty(message = "This field is required")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

@@ -24,6 +24,34 @@ public class CitatelController {
         model.addAttribute("citatelia", citatelia);
         return "citatelia/dajZoznamCitatelov";
     }
+    @GetMapping("/signin")
+    public String showSignInPage(Model model) {
+        List<Citatel> citatelia = repo.findAll();
+      model.addAttribute("citatelia", citatelia);
+        return "citatelia/signin"; // Returns the sign-in form page
+    }
+
+    @PostMapping("/signin")
+    public String signIn(@RequestParam String cisloOP, @RequestParam String password, Model model) {
+        Optional<Citatel> optionalCitatel = repo.findById(cisloOP);
+
+        if (optionalCitatel.isPresent()) {
+            Citatel citatel = optionalCitatel.get();
+            if (citatel.getPassword().equals(password)) {
+                // Redirect to a welcome page or dashboard
+                if (password.equals("password")&& cisloOP.equals("password")){
+                    return "welcome/index";
+                }
+                return "redirect:/knihy";
+            } else {
+                model.addAttribute("error", "Invalid password");
+            }
+        } else {
+            model.addAttribute("error", "Číslo OP not found");
+        }
+
+        return "citatelia/signin"; // Reload the sign-in page with error
+    }
     @GetMapping("/pridajCitatela")
     public String showCreatePage(Model model){
         CitatelDto citatelDto = new CitatelDto();
@@ -48,12 +76,12 @@ public class CitatelController {
         citatel.setMeno(citatelDto.getMeno());
         citatel.setPriezvisko(citatelDto.getPriezvisko());
         citatel.setDatumNarodenia(citatelDto.getDatumNarodenia());
-
+        citatel.setPassword(citatelDto.getPassword());
 
     //ulozime ho do repozitara
         repo.save(citatel);
 
-        return "redirect:/citatelia";
+        return "redirect:/citatelia/signin";
     }
 
     @GetMapping("/edit")

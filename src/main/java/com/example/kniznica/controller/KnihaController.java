@@ -3,6 +3,7 @@ package com.example.kniznica.controller;
 
 import com.example.kniznica.entity.Kniha;
 import com.example.kniznica.entity.KnihaDto;
+import com.example.kniznica.entity.StavVypozicky;
 import com.example.kniznica.repositar.KnihaRepo;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/knihy")
@@ -156,6 +158,49 @@ public class KnihaController {
 
         return "redirect:/knihy";
     }
+    @GetMapping("/rezervuj")
+    public String showRezervujPage(Model model) {
+        List<Kniha> knihy = repo.findAll(Sort.by(Sort.Direction.DESC , "id"))
+                .stream()
+                .filter(kniha -> kniha.getJeVypozicana() == StavVypozicky.NIE)
+                .collect(Collectors.toList());
+        model.addAttribute("knihy", knihy);
+        return "knihy/rezervuj";
+    }
+
+
+    @PostMapping("/rezervuj")
+    public String rezervujKnihu(Model model, @RequestParam long id, @Valid @ModelAttribute KnihaDto knihaDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "knihy/rezervuj";
+        }
+
+        try {
+            Kniha kniha = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid book ID: " + id));
+
+            if (kniha.getJeVypozicana() == StavVypozicky.NIE) { // Check if the book is not reserved
+                kniha.setJeVypozicana(StavVypozicky.ANO); // Mark the book as reserved
+                repo.save(kniha);
+            } else {
+                model.addAttribute("error", "Book is already reserved.");
+                // Re-fetch the list of available books for display
+                List<Kniha> knihy = repo.findAll(Sort.by(Sort.Direction.DESC, "id"))
+                        .stream()
+                        .filter(k -> k.getJeVypozicana() == StavVypozicky.NIE)
+                        .collect(Collectors.toList());
+                model.addAttribute("knihy", knihy);
+                return "knihy/rezervuj";
+            }
+        } catch (Exception e) {
+            System.err.println("Exception: " + e.getMessage());
+            return "knihy/rezervuj";
+        }
+
+        // Redirect back to the rezervuj page to refresh the list
+        return "redirect:/knihy/rezervuj";
+    }
+
+
 
     @GetMapping("/delete")
    public String deleteProduct(@RequestParam long id){
